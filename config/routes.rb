@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
 
-  match 'login' => 'login#index'
+  match '/cas/login' => 'login#index', via:'get'
 
 end

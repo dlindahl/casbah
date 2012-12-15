@@ -18,9 +18,11 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ['lib']
 
-  gem.add_dependency 'rails', '~> 3.2.9'
-  # gem.add_dependency 'jquery-rails'
+  gem.add_dependency 'rails',       '~> 3.2.9'
+  gem.add_dependency 'redis',       '~> 3.0.2'
+  gem.add_dependency 'addressable', '~> 2.3.2'
 
   gem.add_development_dependency 'awesome_print'
   gem.add_development_dependency 'rspec-rails', '~> 2.12.0'
+  gem.add_development_dependency 'mock_redis',  '~> 0.6.2'
 end

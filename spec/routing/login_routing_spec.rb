@@ -1,7 +1,7 @@
-describe '/login routing' do
+describe '/cas/login routing' do
 
-  it 'routes /login to login#index' do
-    expect( get:'/login' ).to route_to controller: 'login', action: 'index'
+  it 'routes GET /cas/login to login#index' do
+    expect( get:'/cas/login' ).to route_to controller: 'login', action: 'index'
   end
 
 end
