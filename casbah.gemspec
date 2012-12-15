@@ -1,23 +1,25 @@
-$:.push File.expand_path("../lib", __FILE__)
-
-# Maintain your gem's version:
-require "casbah/version"
+# -*- encoding: utf-8 -*-
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'casbah/version'
 
 # Describe your gem and declare its dependencies:
-Gem::Specification.new do |s|
-  s.name        = "casbah"
-  s.version     = Casbah::VERSION
-  s.authors     = ["TODO: Your name"]
-  s.email       = ["TODO: Your email"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of Casbah."
-  s.description = "TODO: Description of Casbah."
+Gem::Specification.new do |gem|
+  gem.name          = 'casbah'
+  gem.version       = Casbah::VERSION
+  gem.authors       = ['Derek Lindahl']
+  gem.email         = ['dlindahl@customink.com']
+  gem.homepage      = 'https://github.com/dlindahl/casbah'
+  gem.description   = 'A CAS server Rails engine'
+  gem.summary       = gem.description
 
-  s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
-  s.test_files = Dir["test/**/*"]
+  gem.files         = `git ls-files`.split($/)
+  gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
+  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
+  gem.require_paths = ['lib']
 
-  s.add_dependency "rails", "~> 3.2.9"
-  # s.add_dependency "jquery-rails"
+  gem.add_dependency 'rails', '~> 3.2.9'
+  # gem.add_dependency 'jquery-rails'
 
-  s.add_development_dependency "sqlite3"
+  # gem.add_development_dependency 'sqlite3'
 end
