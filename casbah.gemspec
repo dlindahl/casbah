@@ -21,5 +21,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'rails', '~> 3.2.9'
   # gem.add_dependency 'jquery-rails'
 
-  # gem.add_development_dependency 'sqlite3'
+  gem.add_development_dependency 'awesome_print'
+  gem.add_development_dependency 'rspec-rails', '~> 2.12.0'
 end
