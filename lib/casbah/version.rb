@@ -1,0 +1,3 @@
+module Casbah
+  VERSION = '0.0.1'
+end
