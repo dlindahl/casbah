@@ -1,4 +1,10 @@
 describe LoginController do
+  let(:authenticated) { false }
+
+  let(:warden) { double('warden', authenticate?:authenticated) }
+
+  before { request.env['warden'] = warden }
+
   let(:params) { { } }
 
   let(:username) { 'jdoe' }
@@ -217,143 +223,144 @@ describe LoginController do
     end
   end
 
-  # describe '2.2. /login as credential acceptor' do
-  #   let(:make_request!) { post('/login', params) }
+  describe '2.2. /login as credential acceptor' do
+    let(:make_request!) { post(:create, params) }
 
-  #   let(:params) { { username:username, password:'foo', lt:'LT-123' } }
+    let(:params) { { username:username, password:'foo', lt:'LT-123' } }
 
-  #   describe '2.2.1. parameters common to all types of authentication' do
-  #     describe 'service [OPTIONAL]' do
-  #       before do
-  #         params.merge! service:service
+    describe '2.2.1. parameters common to all types of authentication' do
+      describe 'service [OPTIONAL]' do
+        let(:authenticated) { true }
 
-  #         login_as username
+        before do
+          params.merge! service:service
 
-  #         make_request!
-  #       end
+          make_request!
+        end
 
-  #       it 'MUST redirect the client to this URL upon successful authentication' do
-  #         last_response.status.should eq 303
-  #         last_response.headers['Location'].should match Regexp.new("\\A#{service}")
-  #       end
-  #     end
+        it 'MUST redirect the client to this URL upon successful authentication' do
+          response.should be_redirect
 
-  #     describe 'warn [OPTIONAL]' do
-  #       before do
-  #         params.merge! warn:'true'
+          service_url  = Addressable::URI.parse( service )
+          location_url = Addressable::URI.parse( response.location )
 
-  #         make_request!
-  #       end
+          location_url.query_values.keys.should include( *service_url.query_values.keys )
+          location_url.query_values['ticket'].should match %r{ST-\w{256}}
+          location_url.fragment.should eq service_url.fragment
+        end
+      end
 
-  #       subject { JSON.parse( last_response.body) }
+      describe 'warn [OPTIONAL]' do
+        before do
+          params.merge! warn:'true'
 
-  #       context 'if this parameter is set' do
-  #         it 'single sign-on MUST NOT be transparent.' do
-  #           subject['id'].should match %r{\ALT-}
-  #         end
+          make_request!
+        end
 
-  #         it 'MUST be prompted before being authenticated to another service.' do
-  #           subject['id'].should match %r{\ALT-}
-  #         end
-  #       end
-  #     end
+        context 'if this parameter is set' do
+          it 'single sign-on MUST NOT be transparent.' do
+            response.should_not be_redirect
+          end
 
-  #     describe '2.2.2. parameters for username/password authentication' do
-  #       before { make_request! }
+          it 'MUST be prompted before being authenticated to another service.' do
+            subject.body.should == '[LOGIN FORM]'
+          end
+        end
+      end
 
-  #       describe 'username [REQUIRED]' do
-  #         let(:params) { { password:'foo', lt:123 } }
+      describe '2.2.2. parameters for username/password authentication' do
+        before { make_request! }
 
-  #         it 'MUST be passed to /login' do
-  #           last_response.status.should eq 400
-  #           last_response.body.should match %r{username}
-  #         end
-  #       end
+        describe 'username [REQUIRED]' do
+          let(:params) { { password:'foo', lt:123 } }
 
-  #       describe 'password [REQUIRED]' do
-  #         let(:params) { { username:username, lt:123 } }
+          it 'MUST be passed to /login' do
+            subject.status.should eq 400
+            subject.body.should match %r{username}
+          end
+        end
 
-  #         it 'MUST be passed to /login' do
-  #           last_response.status.should eq 400
-  #           last_response.body.should match %r{password}
-  #         end
-  #       end
+        describe 'password [REQUIRED]' do
+          let(:params) { { username:username, lt:123 } }
 
-  #       describe 'lt [REQUIRED]' do
-  #         let(:params) { { username:username, password:'password' } }
+          it 'MUST be passed to /login' do
+            subject.status.should eq 400
+            subject.body.should match %r{password}
+          end
+        end
 
-  #         it 'MUST be passed to /login' do
-  #           last_response.status.should eq 400
-  #           last_response.body.should match %r{lt}
-  #         end
-  #       end
-  #     end
+        describe 'lt [REQUIRED]' do
+          let(:params) { { username:username, password:'password' } }
 
-  #     describe '2.2.3. parameters for trust authentication' do
-  #       it 'There are no REQUIRED HTTP request parameters for trust authentication. Trust authentication may be based on any aspect of the HTTP request.', :untestable do
-  #         # Untestable
-  #       end
-  #     end
+          it 'MUST be passed to /login' do
+            subject.status.should eq 400
+            subject.body.should match %r{lt}
+          end
+        end
+      end
 
-  #     describe '2.2.4. response' do
-  #       context 'One of the following responses MUST be provided by /login when it is operating as a credential acceptor.' do
-  #         describe 'successful login' do
-  #           let(:params) { { service:service, username:username, password:'foo', lt:'LT-123' } }
+      describe '2.2.3. parameters for trust authentication' do
+        it 'There are no REQUIRED HTTP request parameters for trust authentication. Trust authentication may be based on any aspect of the HTTP request.', :untestable do
+          # Untestable
+        end
+      end
 
-  #           before do
-  #             login_as username
+      describe '2.2.4. response' do
+        context 'One of the following responses MUST be provided by /login when it is operating as a credential acceptor.' do
+          describe 'successful login' do
+            let(:params) { { service:service, username:username, password:'foo', lt:'LT-123' } }
 
-  #             make_request!
-  #           end
+            let(:authenticated) { true }
 
-  #           it 'MUST redirect the client to the URL specified by the "service" parameter in a manner that will not cause the client\'s credentials to be forwarded to the service.' do
-  #             last_response.status.should eq 303
-  #             last_response.headers['Location'].should match Regexp.new("\\A#{service}")
-  #           end
+            before { make_request! }
 
-  #           it 'MUST result in the client issuing a GET request to the service.' do
-  #             last_response.status.should eq 303
-  #             last_response.headers['Location'].should_not be_nil
-  #           end
+            it 'MUST redirect the client to the URL specified by the "service" parameter in a manner that will not cause the client\'s credentials to be forwarded to the service.' do
+              subject.location.should_not include username
+            end
 
-  #           it 'MUST include a valid service ticket, passed as the HTTP request parameter, "ticket".' do
-  #             last_response.headers['Location'].should match Regexp.new("\\A#{service}\\?.*ticket=ST-\\w{256}")
-  #           end
+            it 'MUST result in the client issuing a GET request to the service.' do
+              subject.location.should_not be_nil
+            end
 
-  #           context 'If "service" was not specified' do
-  #             let(:params) { { username:username, password:'foo', lt:'LT-123' } }
+            it 'MUST include a valid service ticket, passed as the HTTP request parameter, "ticket".' do
+              service_url  = Addressable::URI.parse( service )
+              location_url = Addressable::URI.parse( subject.location )
 
-  #             subject { JSON.parse( last_response.body) }
+              location_url.query_values.keys.should include( *service_url.query_values.keys )
+              location_url.query_values['ticket'].should match %r{ST-\w{256}}
+              location_url.fragment.should eq service_url.fragment
+            end
 
-  #             it 'MUST display a message notifying the client that it has successfully initiated a single sign-on session.' do
-  #               subject['id'].should match %r{\AST-}
-  #             end
-  #           end
-  #         end
+            context 'If "service" was not specified' do
+              let(:params) { { username:username, password:'foo', lt:'LT-123' } }
 
-  #         describe 'failed login' do
-  #           let(:params) { { username:username, password:'foo', lt:'LT-123' } }
+              it 'MUST display a message notifying the client that it has successfully initiated a single sign-on session.' do
+                expect(response).to render_template :create
+              end
+            end
+          end
 
-  #           subject { JSON.parse( last_response.body) }
+          describe 'failed login' do
+            let(:params) { { username:username, password:'foo', lt:'LT-123' } }
 
-  #           before { make_request! }
+            before { make_request! }
 
-  #           it 'MUST return to /login as a credential requestor.' do
-  #             last_response.status.should eq 303
-  #             last_response.headers['Location'].should eq '/login'
-  #           end
+            it 'MUST return to /login as a credential requestor.' do
+              subject.location.should == login_form_url
+            end
 
-  #           it 'is RECOMMENDED in this case that the CAS server display an error message be displayed to the user describing why login failed (e.g. bad password, locked account, etc.)' do
-  #             subject['_embedded']['error']['message'].should == 'Invalid username or password'
-  #           end
+            it 'is RECOMMENDED in this case that the CAS server display an error message be displayed to the user describing why login failed (e.g. bad password, locked account, etc.)' do
+              flash[:alert].should == 'Invalid username or password'
+            end
 
-  #           it 'MAY provide an opportunity for the user to attempt to login again.' do
-  #             subject['_links'].should include('login')
-  #           end
-  #         end
-  #       end
-  #     end
-  #   end
-  # end
+            it 'MAY provide an opportunity for the user to attempt to login again.' do
+              subject.status.should eq 401
+              subject.location.should eq login_form_url
+            end
+          end
+        end
+      end
+    end
+  end
 
 end

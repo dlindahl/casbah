@@ -4,4 +4,7 @@ describe '/cas/login routing' do
     expect( get:'/cas/login' ).to route_to controller: 'login', action: 'index'
   end
 
+  it 'routes POST /cas/login to login#create' do
+    expect( post:'/cas/login' ).to route_to controller: 'login', action: 'create'
+  end
 end
