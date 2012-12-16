@@ -1,0 +1,5 @@
+<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>
+  <cas:authenticationFailure code="<%= @response.failure_code %>">
+    <%= @response.errors.full_messages.to_sentence %>
+  </cas:authenticationFailure>
+</cas:serviceResponse>

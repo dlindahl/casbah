@@ -28,6 +28,7 @@ TODO
 ## TODOs
 
 * Add better CAS §2.4 support
+* Add support for CAS §2.5.4 - Proxy callback support
 
 ## Contributing
 

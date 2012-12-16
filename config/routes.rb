@@ -7,4 +7,6 @@ Rails.application.routes.draw do
 
   match '/cas/validate' => 'validate#index', via:'get'
 
+  match '/cas/serviceValidate' => 'service_validate#index', via:'get', as: :service_validate
+
 end

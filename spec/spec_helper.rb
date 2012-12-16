@@ -6,6 +6,8 @@ require 'awesome_print'
 require 'rspec/rails'
 require 'rspec/autorun'
 
+require 'nokogiri'
+
 Rails.backtrace_cleaner.remove_silencers!
 
 # Requires supporting ruby files with custom matchers and macros, etc,
