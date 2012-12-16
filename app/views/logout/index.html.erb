@@ -1,0 +1,13 @@
+<p>
+  You have been signed out.
+</p>
+
+<% if params[:url] %>
+  <p>
+    The application you just signed out of has provided a link it would like you to follow.
+  </p>
+
+  <p>
+    Please click here to access <%= link_to params[:url], params[:url] %>.
+  </p>
+<% end %>
