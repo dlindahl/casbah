@@ -5,4 +5,6 @@ Rails.application.routes.draw do
 
   match '/cas/logout' => 'logout#index',     via:'get',  as: :logout
 
+  match '/cas/validate' => 'validate#index', via:'get'
+
 end

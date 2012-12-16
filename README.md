@@ -25,6 +25,10 @@ Or install it yourself as:
 
 TODO
 
+## TODOs
+
+* Add better CAS §2.4 support
+
 ## Contributing
 
 1. Fork it
