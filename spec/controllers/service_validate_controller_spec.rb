@@ -90,11 +90,7 @@ describe ServiceValidateController do
     end
 
     describe '2.5.2. response' do
-      before do
-        ServiceTicket.stub(:find_by_ticket)
-          .with(ticket.id)
-          .and_return ticket
-      end
+      before { ticket.save }
 
       it 'will return an XML-formatted CAS serviceResponse as described in the XML schema in Appendix A.' do
         make_request!

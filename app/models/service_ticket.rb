@@ -1,6 +1,8 @@
 class ServiceTicket < Ticket
   attr_reader :username, :url
 
+  validates_presence_of :username, :url, allow_blank:false
+
   def initialize( params = {} )
     super
 
