@@ -78,8 +78,6 @@ protected
         raise NotImplementedError
       end
     else
-      @ticket = LoginTicket.new
-
       render login_form
     end
   end
@@ -119,7 +117,9 @@ private
   end
 
   def login_form
-    { text:'[LOGIN FORM]' }
+    @ticket = LoginTicket.new
+
+    :index
   end
 
   def signed_in_notice

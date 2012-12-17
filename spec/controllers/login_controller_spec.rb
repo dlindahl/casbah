@@ -46,7 +46,7 @@ describe LoginController do
             before { make_request! }
 
             it 'SHOULD request credentials from the user to initiate a single sign-on session.' do
-              subject.body.should == '[LOGIN FORM]'
+              expect(response).to render_template :index
             end
           end
 
@@ -79,7 +79,7 @@ describe LoginController do
           specify 'CAS will require the client to present credentials regardless of the existence of a single sign-on session with CAS.' do
             make_request!
 
-            subject.body.should == '[LOGIN FORM]'
+            expect(response).to render_template :index
           end
 
           specify 'This parameter is not compatible with the "gateway" parameter.' do
@@ -87,7 +87,7 @@ describe LoginController do
 
             make_request!
 
-            subject.body.should == '[LOGIN FORM]'
+            expect(response).to render_template :index
           end
 
           specify 'Services redirecting to the /login URI and login form views posting to the /login URI SHOULD NOT set both the "renew" and "gateway" request parameters. Behavior is undefined if both are set.', :untestable do
@@ -99,7 +99,7 @@ describe LoginController do
 
             make_request!
 
-            subject.body.should == '[LOGIN FORM]'
+            expect(response).to render_template :index
           end
 
           it 'is RECOMMENDED that when the renew parameter is set its value be "true".' do
@@ -119,7 +119,7 @@ describe LoginController do
           before { make_request! }
 
           it 'will not ask the client for credentials.' do
-            subject.body.should_not eq '[LOGIN FORM]'
+            expect(response).to_not render_template :index
           end
         end
 
@@ -162,7 +162,7 @@ describe LoginController do
 
             make_request!
 
-            subject.body.should eq '[LOGIN FORM]'
+            expect(response).to render_template :index
           end
         end
 
@@ -183,34 +183,39 @@ describe LoginController do
     describe '2.1.3. response for username/password authentication' do
       context 'When /login behaves as a credential requestor' do
         context 'In most cases' do
-          before { make_request! }
+          render_views
 
-          it 'will respond by displaying a login screen requesting a username and password.', :todo do
-            subject.body.should == '[LOGIN FORM]'
-            # subject.body.should match %r{username}  # TODO
-            # subject.body.should match %r{password}  # TODO
+          before do
+            params.merge! warn:'true'
+
+            make_request!
           end
 
-          it 'MUST include a form with the parameters, "username", "password", and "lt".', :todo do
-            # subject.body.should match %r{username}  # TODO
-            # subject.body.should match %r{password}  # TODO
-            # subject.body.should match %r{lt}        # TODO
+          it 'will respond by displaying a login screen requesting a username and password.' do
+            subject.body.should match %r{username}
+            subject.body.should match %r{password}
           end
 
-          it 'MAY also include the parameter, "warn".', :todo do
-            # subject.body.should match %r{warn}      # TODO
+          it 'MUST include a form with the parameters, "username", "password", and "lt".' do
+            subject.body.should match %r{username}
+            subject.body.should match %r{password}
+            subject.body.should match %r{lt}
+          end
+
+          it 'MAY also include the parameter, "warn".' do
+            subject.body.should match %r{warn}
           end
 
           context 'If "service" was specified to /login,' do
             let(:params) { { service:service } }
 
-            it '"service" MUST also be a parameter of the form, containing the value originally passed to /login.', :todo do
-              # subject.body.should match %r{service} # TODO
+            it '"service" MUST also be a parameter of the form, containing the value originally passed to /login.' do
+              subject.body.should match %r{service}
             end
           end
 
-          it 'The form MUST be submitted through the HTTP POST method to /login which will then act as a credential acceptor', :todo do
-            # subject.body.should match %r{POST} # TODO
+          it 'The form MUST be submitted through the HTTP POST method to /login which will then act as a credential acceptor' do
+            subject.body.should match %r{post}
           end
         end
       end
@@ -263,7 +268,7 @@ describe LoginController do
           end
 
           it 'MUST be prompted before being authenticated to another service.' do
-            subject.body.should == '[LOGIN FORM]'
+            expect(response).to render_template :index
           end
         end
       end

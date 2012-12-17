@@ -1,0 +1,18 @@
+<%= flash[:alert] %>
+
+<%= form_tag login_url do %>
+  <%= hidden_field_tag :lt, @ticket.id %>
+
+  <% if params[:service] %>
+    <%= hidden_field_tag :service, params[:service] %>
+  <% end %>
+
+  <% if params[:warn] %>
+    <%= hidden_field_tag :warn, params[:warn] %>
+  <% end %>
+
+  <%= text_field_tag     :username, nil, placeholder:'Username', autocomplete:'off' %>
+  <%= password_field_tag :password, nil, placeholder:'Password', autocomplete:'off' %>
+
+  <button type="submit">Sign In</button>
+<% end %>
