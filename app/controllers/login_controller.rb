@@ -18,9 +18,10 @@ class LoginController < ApplicationController
 
   def create
     # TODO: Raise an InvalidRequestError and write a rescuer
+    return render(text:'Missing required lt parameter', status: :bad_request) unless params[:lt]
+    return redirect_to_login_form('Invalid Login Ticket') unless LoginTicket.find_by_ticket( params[:lt] ).try(:verify!)
     return render(text:'Missing required username parameter', status: :bad_request) unless params[:username]
     return render(text:'Missing required password parameter', status: :bad_request) unless params[:password]
-    return render(text:'Missing required lt parameter', status: :bad_request) unless params[:lt]
 
     if params[:warn] == 'true'
       render login_form
@@ -31,7 +32,7 @@ class LoginController < ApplicationController
         render signed_in_notice
       end
     else
-      redirect_to login_form_url, status: :unauthorized, alert:'Invalid username or password'
+      redirect_to_login_form 'Invalid username or password'
     end
   end
 
@@ -119,6 +120,8 @@ private
   def login_form
     @ticket = LoginTicket.new
 
+    @ticket.save
+
     :index
   end
 
@@ -132,6 +135,10 @@ private
     url.query_values = (url.query_values||{}).merge( ticket:id )
 
     url.to_s
+  end
+
+  def redirect_to_login_form( alert )
+    redirect_to login_form_url, status: :see_other, alert:alert
   end
 
 end

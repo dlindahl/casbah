@@ -233,6 +233,8 @@ describe LoginController do
 
     let(:params) { { username:username, password:'foo', lt:'LT-123' } }
 
+    before { LoginTicket.new( id:'LT-123' ).save }
+
     describe '2.2.1. parameters common to all types of authentication' do
       describe 'service [OPTIONAL]' do
         let(:authenticated) { true }
@@ -274,10 +276,14 @@ describe LoginController do
       end
 
       describe '2.2.2. parameters for username/password authentication' do
-        before { make_request! }
+        before do
+          LoginTicket.new( id:'LT-123' ).save
+
+          make_request!
+        end
 
         describe 'username [REQUIRED]' do
-          let(:params) { { password:'foo', lt:123 } }
+          let(:params) { { password:'foo', lt:'LT-123' } }
 
           it 'MUST be passed to /login' do
             subject.status.should eq 400
@@ -286,7 +292,7 @@ describe LoginController do
         end
 
         describe 'password [REQUIRED]' do
-          let(:params) { { username:username, lt:123 } }
+          let(:params) { { username:username, lt:'LT-123' } }
 
           it 'MUST be passed to /login' do
             subject.status.should eq 400
@@ -359,7 +365,7 @@ describe LoginController do
             end
 
             it 'MAY provide an opportunity for the user to attempt to login again.' do
-              subject.status.should eq 401
+              subject.status.should eq 303
               subject.location.should eq login_form_url
             end
           end
