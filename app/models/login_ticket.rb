@@ -2,13 +2,13 @@ class LoginTicket < Ticket
 
   def save
     if valid?
-      RedisStore.set id, 1
-      RedisStore.expire id, expire_time
+      redis.set id, 1
+      redis.expire id, expire_time
     end
   end
 
   def verify!
-    verified = RedisStore.exists( id )
+    verified = redis.exists( id )
 
     destroy
 
@@ -17,7 +17,7 @@ class LoginTicket < Ticket
 
   class << self
     def find_by_id( id )
-      new( id:id ) if RedisStore.exists( id )
+      new( id:id ) if redis.exists( id )
     end
     alias_method :find_by_ticket, :find_by_id
   end

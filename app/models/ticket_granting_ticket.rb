@@ -15,7 +15,7 @@ class TicketGrantingTicket < Ticket
 
       tgt_id = tgc_id.gsub( %r{\ATGC-}, 'TGT-' )
 
-      if username = RedisStore.get( tgt_id )
+      if username = redis.get( tgt_id )
         new id:tgt_id, username:username
       else
         raise TicketNotFoundError, 'Ticket-Granting Cookie not found'

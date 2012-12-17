@@ -18,7 +18,7 @@ describe LoginController do
 
     context 'If the ticket-granting cookie keys to a valid ticket-granting ticket' do
       before do
-        RedisStore.set 'TGT-123', username
+        redis.set 'TGT-123', username
 
         params[:service] = service
 
@@ -52,7 +52,7 @@ describe LoginController do
 
           context 'a single sign-on session already exists' do
             before do
-              RedisStore.set 'TGT-123', username
+              redis.set 'TGT-123', username
 
               cookies[:tgc] = 'TGC-123'
 
@@ -71,7 +71,7 @@ describe LoginController do
 
         context 'if this parameter is set, single sign-on will be bypassed. In this case' do
           before do
-            RedisStore.set 'TGT-123', username
+            redis.set 'TGT-123', username
 
             cookies[:tgc] = 'TGC-123'
           end
@@ -125,7 +125,7 @@ describe LoginController do
 
         context 'If the client has a pre-existing single sign-on session with CAS, or if a single sign-on session can be established through non-interactive means (i.e. trust authentication)' do
           before do
-            RedisStore.set 'TGT-123', username
+            redis.set 'TGT-123', username
 
             cookies[:tgc] = 'TGC-123'
 

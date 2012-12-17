@@ -27,10 +27,19 @@ Configure Warden:
 
 ```ruby
 # config/initializers/casbah.rb
-Casbah.config.warden ->(mgr) {
-  mgr.default_strategies :my_strategy
-}
+Casbah.configure do |c|
+  # Create a new Redis connection with whatever options you need
+  c.redis = Redis.new( host:'localhost', port:6379 )
+
+  # Configure Warden Manager according to your needs and their specifications
+  c.warden ->(mgr) {
+    mgr.default_strategies :my_strategy
+  }
 ```
+
+You are responsible for properly creating and configuring your Redis connection.
+
+In test environments, it is recommended that you use [MockRedis][mock_redis]
 
 The configuration block is passed the whole Warden Manager
 instance, so all Warden options should be available to you.
@@ -49,3 +58,5 @@ instance, so all Warden options should be available to you.
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+[mock_redis]: https://github.com/causes/mock_redis

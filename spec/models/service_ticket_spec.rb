@@ -16,9 +16,9 @@ describe ServiceTicket do
       it 'should save the ticket' do
         subject
 
-        RedisStore.hget( id, :username ).should eq username
-        RedisStore.hget( id, :url ).should eq url
-        RedisStore.ttl( id ).should eq 5.minutes
+        redis.hget( id, :username ).should eq username
+        redis.hget( id, :url ).should eq url
+        redis.ttl( id ).should eq 5.minutes
       end
     end
 
@@ -28,7 +28,7 @@ describe ServiceTicket do
       it 'should not save the ticket' do
         subject
 
-        RedisStore.keys('*').should be_empty
+        redis.keys('*').should be_empty
       end
     end
   end
@@ -68,8 +68,8 @@ describe ServiceTicket do
 
     context 'with a known ID' do
       before do
-        RedisStore.hset id, :username, username
-        RedisStore.hset id, :url, url
+        redis.hset id, :username, username
+        redis.hset id, :url, url
       end
 
       it 'should find the ticket' do
@@ -113,7 +113,7 @@ describe ServiceTicket do
           it 'MUST then invalidate the ticket, causing all future validation attempts of that same ticket to fail.' do
             subject.verify! url
 
-            RedisStore.keys('*').should be_empty
+            redis.keys('*').should be_empty
           end
         end
 
@@ -121,16 +121,16 @@ describe ServiceTicket do
           it 'MUST then invalidate the ticket, causing all future validation attempts of that same ticket to fail.' do
             subject.verify! 'http://localhost'
 
-            RedisStore.keys('*').should be_empty
+            redis.keys('*').should be_empty
           end
         end
 
         it 'SHOULD expire unvalidated service tickets in a reasonable period of time after they are issued.' do
-          RedisStore.ttl( subject.id ).should eq 5.minutes
+          redis.ttl( subject.id ).should eq 5.minutes
         end
 
         context 'If a service presents for validation an expired service ticket' do
-          before { RedisStore.del( subject.id ) }
+          before { redis.del( subject.id ) }
 
           it 'MUST respond with a validation failure response.' do
             subject.verify!( url ).should be_false

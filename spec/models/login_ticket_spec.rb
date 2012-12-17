@@ -12,7 +12,7 @@ describe LoginTicket do
       it 'should save the ticket' do
         subject
 
-        RedisStore.get( id ).should eq '1'
+        redis.get( id ).should eq '1'
       end
     end
 
@@ -24,7 +24,7 @@ describe LoginTicket do
       it 'should not save the ticket' do
         subject
 
-        RedisStore.keys('*').should be_empty
+        redis.keys('*').should be_empty
       end
     end
   end

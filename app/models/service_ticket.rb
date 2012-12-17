@@ -12,16 +12,16 @@ class ServiceTicket < Ticket
 
   def save
     if valid?
-      RedisStore.pipelined do 
-        RedisStore.hset    id, :url, url
-        RedisStore.hset    id, :username, username
-        RedisStore.expire  id, expire_time
+      redis.pipelined do 
+        redis.hset    id, :url, url
+        redis.hset    id, :username, username
+        redis.expire  id, expire_time
       end
     end
   end
 
   def verify!( url )
-    verified = url == RedisStore.hget( id, :url )
+    verified = url == redis.hget( id, :url )
 
     destroy
 
@@ -30,8 +30,8 @@ class ServiceTicket < Ticket
 
   class << self
     def find_by_id( id )
-      if username = RedisStore.hget( id, :username )
-        url = RedisStore.hget( id, :url )
+      if username = redis.hget( id, :username )
+        url = redis.hget( id, :url )
 
         new id:id, username:username, url:url
       end

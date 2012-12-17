@@ -16,7 +16,7 @@ describe Ticket do
     subject { instance.destroy }
 
     it 'should delete the key' do
-      RedisStore.should_receive(:del).with( instance.id )
+      redis.should_receive(:del).with( instance.id )
 
       subject
     end

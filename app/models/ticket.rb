@@ -17,7 +17,19 @@ class Ticket
   end
 
   def destroy
-    RedisStore.del id
+    redis.del id
+  end
+
+  class << self
+    def redis
+      Casbah.config.redis
+    end
+  end
+
+private
+
+  def redis
+    self.class.redis
   end
 
 end
