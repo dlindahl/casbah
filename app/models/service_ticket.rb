@@ -40,3 +40,5 @@ class ServiceTicket < Ticket
   end
 
 end
+
+ServiceTicket.id_prefix = 'ST-'

@@ -1,11 +1,8 @@
 class Ticket
   include ActiveModel::Validations
 
-  @@expire_time = 5.minutes
-  cattr_accessor :expire_time
-
-  @@id_prefix = 'ST-'
-  cattr_accessor :id_prefix
+  class_attribute :expire_time
+  class_attribute :id_prefix
 
   attr_reader :id
 
@@ -24,3 +21,5 @@ class Ticket
   end
 
 end
+
+Ticket.expire_time = 5.minutes

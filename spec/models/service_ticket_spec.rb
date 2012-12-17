@@ -7,11 +7,7 @@ describe ServiceTicket do
 
   let(:instance) { described_class.new( id:id, username:username, url:url ) }
 
-  subject { instance }
-
-  it { should respond_to :id }
-  it { should respond_to :username }
-  it { should respond_to :url }
+  its(:id_prefix) { should == 'ST-' }
 
   describe '#save' do
     subject { instance.save }
@@ -92,6 +88,8 @@ describe ServiceTicket do
   end
 
   describe 'CAS protocol specification' do
+    subject { instance }
+
     describe '3.1' do
 
       describe '3.1.1' do
