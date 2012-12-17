@@ -20,7 +20,7 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency 'rails',       '~> 3.2.9'
   gem.add_dependency 'redis',       '~> 3.0.2'
-  gem.add_dependency 'addressable', '~> 2.3.2'
+  gem.add_dependency 'addressable', '~> 2.2'
   gem.add_dependency 'warden',      '~> 1.2.1'
 
   gem.add_development_dependency 'awesome_print'
