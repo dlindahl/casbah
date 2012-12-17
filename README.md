@@ -23,7 +23,17 @@ Or install it yourself as:
 
 ## Configuration
 
-TODO
+Configure Warden:
+
+```ruby
+# config/initializers/casbah.rb
+Casbah.config.warden ->(mgr) {
+  mgr.default_strategies :my_strategy
+}
+```
+
+The configuration block is passed the whole Warden Manager
+instance, so all Warden options should be available to you.
 
 ## TODOs
 
