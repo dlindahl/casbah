@@ -5,7 +5,7 @@ module Casbah
 
     initializer 'casbah.configure_warden' do |app|
       app.config.middleware.use Warden::Manager do |manager|
-        manager.failure_app = app # TODO: Can't figure out why this is a required config option
+        manager.failure_app = LoginController.action( :authentication_failed )
 
         Casbah.config.warden.call manager
       end

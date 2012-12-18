@@ -36,6 +36,13 @@ class LoginController < ApplicationController
     end
   end
 
+  # Used as Warden's default failure app
+  def authentication_failed
+    Rails.logger.warn "Authentication attempt failed: #{request.env['warden.options']}"
+
+    render text:'401 Unauthorized', status: :unauthorized
+  end
+
 protected
 
   def renew
