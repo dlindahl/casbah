@@ -16,7 +16,7 @@ describe TicketGrantingCookie do
   describe '#path' do
     subject { instance.path }
 
-    it { should == '/cas/' }
+    it { should == '/' }
   end
 
   describe '#domain' do
@@ -36,7 +36,7 @@ describe TicketGrantingCookie do
 
     it { should include(value:   'TGC-123') }
     it { should include(domain:  'example.org') }
-    it { should include(path:    '/cas/') }
+    it { should include(path:    '/') }
     it { should include(expires: nil) }
   end
 

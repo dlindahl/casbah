@@ -1,7 +1,7 @@
-describe '/cas/serviceValidate routing' do
+describe '/serviceValidate routing' do
 
-  it 'routes GET /cas/serviceValidate to validate#index' do
-    expect( get:'/cas/serviceValidate' ).to route_to controller: 'service_validate', action: 'index'
+  it 'routes GET /serviceValidate to validate#index' do
+    expect( get:'/serviceValidate' ).to route_to controller: 'service_validate', action: 'index'
   end
 
 end
