@@ -7,13 +7,17 @@ class LogoutController < ApplicationController
       @sso_session.destroy
     end
 
-    cookies.delete 'tgc'
+    cookies.delete 'tgc', domain:domain
   end
 
 private
 
   def signed_in?
     @sso_session ||= TicketGrantingTicket.find_by_tgc( cookies['tgc'] )
+  end
+
+  def domain
+    request.host =~ %r{localhost} ? nil : request.host
   end
 
 end
