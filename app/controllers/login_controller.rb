@@ -25,7 +25,7 @@ class LoginController < ApplicationController
     if params[:warn] == 'true'
       render login_form
     elsif authorized?
-      if params[:service]
+      if @ticket
         redirect_to append_ticket( params[:service], @ticket.id )
       else
         render signed_in_notice
@@ -105,10 +105,16 @@ private
   def authorized?
     return unless warden.authenticate?
 
-    @ticket = if params[:username]
-      ServiceTicket.new( username:params[:username] )
-    elsif params[:ticket]
-      ServiceTicket.find_by_ticket( params[:ticket] )
+    tgt = TicketGrantingTicket.create( username:params[:username] )
+
+    cookies['tgc'] = tgt.to_tgc( request ).to_cookie
+
+    if params[:service]
+      @ticket = ServiceTicket.create( username:params[:username], url:params[:service] )
+
+      @ticket
+    else
+      true
     end
   end
 
