@@ -352,12 +352,14 @@ describe LoginController do
           end
 
           describe 'failed login' do
-            let(:params) { { username:username, password:'foo', lt:'LT-123' } }
+            let(:params) { { username:username, password:'foo', lt:'LT-123', service:service } }
 
             before { make_request! }
 
             it 'MUST return to /login as a credential requestor.' do
-              subject.location.should == login_form_url
+              location_url = Addressable::URI.parse( subject.location )
+
+              location_url.omit(:query).to_s.should == login_form_url
             end
 
             it 'is RECOMMENDED in this case that the CAS server display an error message be displayed to the user describing why login failed (e.g. bad password, locked account, etc.)' do
@@ -366,7 +368,11 @@ describe LoginController do
 
             it 'MAY provide an opportunity for the user to attempt to login again.' do
               subject.status.should eq 303
-              subject.location.should eq login_form_url
+
+              location_url = Addressable::URI.parse( subject.location )
+
+              location_url.query_values['service'].should eq service
+              location_url.omit(:query).to_s.should eq login_form_url
             end
           end
         end

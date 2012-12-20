@@ -145,7 +145,9 @@ private
   end
 
   def redirect_to_login_form( alert )
-    redirect_to login_form_url, status: :see_other, alert:alert
+    url = login_form_url( service:params[:service] )
+
+    redirect_to url, status: :see_other, alert:alert
   end
 
 end
