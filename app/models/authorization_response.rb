@@ -4,9 +4,9 @@ class AuthorizationResponse
   attr_accessor :ticket
   attr_reader :username, :service
 
-  validates_presence_of :service, :ticket, allow_blank:false
-
+  validates_presence_of :service, allow_blank:false
   validate :ticket_type
+  validates_presence_of :ticket, allow_blank:false
   validate :verified_ticket
 
   InvalidRequest = 'INVALID_REQUEST'
@@ -37,25 +37,21 @@ class AuthorizationResponse
       InternalError
     elsif errors[:service_verification].any?
       InvalidService
+    elsif errors[:ticket_type].any?
+      InvalidTicket
     elsif errors[:service].any? || errors[:ticket].any?
       InvalidRequest
-    else
-      InvalidTicket
     end
   end
 
-  def authorized?( warden )
-    if warden.authenticate?
-      self.ticket = if username
-        ServiceTicket.new( username:username )
-      elsif ticket
-        ServiceTicket.find_by_ticket( ticket )
-      end
-    end
+  def authorized?
+    st = ServiceTicket.find_by_ticket( ticket )
+
+    self.ticket = st if st
 
     valid?
   rescue StandardError => err
-    errors.add(:base, err.message)
+    errors.add :base, err.message
 
     false
   end

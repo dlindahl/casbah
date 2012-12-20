@@ -1,10 +1,4 @@
 describe ServiceValidateController do
-  let(:authenticated) { false }
-
-  let(:warden) { double('warden', authenticate?:authenticated) }
-
-  before { request.env['warden'] = warden }
-
   let(:username) { 'jdoe' }
 
   let(:service) { 'http://example.org/service/url?foo=123&baz=qux#hashtag' }
@@ -100,8 +94,6 @@ describe ServiceValidateController do
 
       context 'Below are example responses:' do
         context 'On ticket validation success:' do
-          let(:authenticated) { true }
-
           it 'will respond accordingly' do
             make_request!
 
@@ -114,6 +106,10 @@ describe ServiceValidateController do
         end
 
         context 'On ticket validation failure:' do
+          before do
+            ServiceTicket.stub(:find_by_ticket).and_return nil
+          end
+
           it 'will respond accordingly' do
             make_request!
 
@@ -155,8 +151,6 @@ describe ServiceValidateController do
           end
 
           specify 'INVALID_SERVICE' do # the ticket provided was valid, but the service specified did not match the service associated with the ticket. CAS MUST invalidate the ticket and disallow future validation of that same ticket.
-            warden.stub(:authenticate?).and_return true
-
             ServiceTicket.new( id:'ST-123', username:username, url:'http://localhost').save
 
             ServiceTicket.any_instance.should_receive(:destroy)
@@ -173,7 +167,7 @@ describe ServiceValidateController do
           end
 
           specify 'INTERNAL_ERROR' do # an internal error occurred during ticket validation
-            warden.stub(:authenticate?).and_raise( StandardError, 'An error has occurred' )
+            ServiceTicket.stub(:find_by_ticket).and_raise( StandardError, 'An error has occurred' )
 
             make_request!
 
