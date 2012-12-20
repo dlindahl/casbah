@@ -24,6 +24,12 @@ class Ticket
     def redis
       Casbah.config.redis
     end
+
+    def create( *args )
+      ticket = new( *args )
+
+      ticket if ticket.save
+    end
   end
 
 private

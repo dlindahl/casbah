@@ -22,4 +22,16 @@ describe Ticket do
     end
   end
 
+  describe '.create' do
+    subject { described_class.create }
+
+    before do
+      described_class.any_instance
+        .should_receive(:save)
+        .and_return true
+    end
+
+    it { should be_a Ticket }
+  end
+
 end
