@@ -60,7 +60,7 @@ describe LoginController do
             end
 
             it 'SHOULD display a message notifying the client that it is already logged in.' do
-              subject.body.should == 'already signed in'
+              should render_template 'login/already_signed_in'
             end
           end
         end

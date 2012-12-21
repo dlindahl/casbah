@@ -92,7 +92,7 @@ protected
 
   def login
     if signed_in?
-      render text:'already signed in'
+      render already_signed_in
     else
       render login_form
     end
@@ -111,9 +111,9 @@ private
   def authorized?
     return unless warden.authenticate?
 
-    tgt = TicketGrantingTicket.create( username:params[:username] )
+    @sso_session = TicketGrantingTicket.create( username:params[:username] )
 
-    cookies['tgc'] = tgt.to_tgc( request ).to_cookie
+    cookies['tgc'] = @sso_session.to_tgc( request ).to_cookie
 
     if params[:service]
       @ticket = ServiceTicket.create( username:params[:username], url:params[:service] )
@@ -130,6 +130,10 @@ private
     @ticket.save
 
     :index
+  end
+
+  def already_signed_in
+    :already_signed_in
   end
 
   def signed_in_notice

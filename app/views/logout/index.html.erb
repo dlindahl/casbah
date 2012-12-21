@@ -1,13 +1,29 @@
-<p>
-  You have been signed out.
-</p>
+<div class="hero-unit">
+  <div class="container">
+    <div class="row">
+      <div class="span12">
 
-<% if params[:url] %>
-  <p>
-    The application you just signed out of has provided a link it would like you to follow.
-  </p>
+        <h1>Goodbye!</h1>
 
-  <p>
-    Please click here to access <%= link_to params[:url], params[:url] %>.
-  </p>
-<% end %>
+        <p>
+          You have been signed out.
+        </p>
+
+        <% if params[:url] %>
+          <p>
+            The application you just signed out of has provided a link it would like you to follow.
+          </p>
+
+          <p>
+            Please click here to access <%= link_to params[:url], params[:url] %>.
+          </p>
+        <% end %>
+
+        <p>
+          <%= link_to 'Sign In', login_url, class:'btn btn-primary' %>
+        </p>
+
+      </div>
+    </div>
+  </div>
+</div>
