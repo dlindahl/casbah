@@ -27,4 +27,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rspec-rails', '~> 2.12.0'
   gem.add_development_dependency 'mock_redis',  '~> 0.6.2'
   gem.add_development_dependency 'nokogiri',    '~> 1.5.5'
+  gem.add_development_dependency 'fakefs',      '~> 0.4.2'
 end
