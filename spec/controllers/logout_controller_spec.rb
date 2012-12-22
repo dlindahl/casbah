@@ -4,6 +4,10 @@ describe LogoutController do
       .and_return double('TGT', destroy:true)
   end
 
+  let(:warden) { double('warden', logout:true) }
+
+  before { request.env['warden'] = warden }
+
   let(:params) { { } }
 
   let(:url) { 'http://example.org/my_return?url=test#hashtag' }
