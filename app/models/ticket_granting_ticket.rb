@@ -3,8 +3,6 @@ class TicketGrantingTicket < Ticket
 
   validates_presence_of :username, allow_blank:false
 
-  TicketNotFoundError = Class.new(StandardError)
-
   def initialize( params = {} )
     super
 
@@ -22,7 +20,7 @@ class TicketGrantingTicket < Ticket
   end
 
   class << self
-    def find_by_tgc( tgc_id )
+    def find_by_tgc!( tgc_id )
       return if tgc_id.blank?
 
       tgt_id = tgc_id.gsub( %r{\ATGC-}, id_prefix )
@@ -30,8 +28,14 @@ class TicketGrantingTicket < Ticket
       if username = redis.get( tgt_id )
         new id:tgt_id, username:username
       else
-        raise TicketNotFoundError, 'Ticket-Granting Cookie not found'
+        raise Casbah::TicketNotFoundError
       end
+    end
+
+    def find_by_tgc( *args )
+      find_by_tgc!( *args )
+    rescue Casbah::TicketNotFoundError
+      # Noop
     end
   end
 

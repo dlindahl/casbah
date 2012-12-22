@@ -37,10 +37,10 @@ describe TicketGrantingTicket do
     it { should be_a TicketGrantingCookie }
   end
 
-  describe '.find_by_tgc' do
+  describe '.find_by_tgc!' do
     let(:tgc) { 'TGC-123' }
 
-    subject { described_class.find_by_tgc( tgc ) }
+    subject { described_class.find_by_tgc!( tgc ) }
 
     context 'with a known value' do
       before { Casbah.config.redis.set( id, username ) }
@@ -50,7 +50,7 @@ describe TicketGrantingTicket do
 
     context 'with an unknown value' do
       it 'should raise an error' do
-        expect{ subject }.to raise_error TicketGrantingTicket::TicketNotFoundError
+        expect{ subject }.to raise_error Casbah::TicketNotFoundError
       end
     end
 
@@ -58,6 +58,26 @@ describe TicketGrantingTicket do
       let(:tgc) { nil }
 
       it { should be_nil }
+    end
+  end
+
+  describe '.find_by_tgc' do
+    subject { described_class.find_by_tgc 123 }
+    context 'with a known value' do
+      it 'should delegate to .find_by_tgc!' do
+        described_class.should_receive(:find_by_tgc!).with( 123 )
+
+        subject
+      end
+    end
+
+    context 'with an unknown value' do
+      it 'should delegate to .find_by_tgc!' do
+        described_class.should_receive(:find_by_tgc!)
+          .and_raise( Casbah::TicketNotFoundError )
+
+        subject.should be_nil
+      end
     end
   end
 end
