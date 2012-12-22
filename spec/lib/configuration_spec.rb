@@ -57,7 +57,7 @@ describe 'Casbah.config' do
 
       context 'without arguments' do
         it 'should have a default' do
-          subject.should == Casbah::Service::YamlStore
+          subject.should == Casbah::Service::MemoryStore
         end
       end
     end

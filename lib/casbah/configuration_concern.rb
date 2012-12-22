@@ -5,7 +5,7 @@ module Casbah
     extend ActiveSupport::Concern
 
     def self.extended( klass )
-      klass.instance_variable_set '@service_store',   :yaml_store
+      klass.instance_variable_set '@service_store',   :memory_store
       klass.instance_variable_set '@service_model',   :base
       klass.instance_variable_set '@service_options', {}
     end

@@ -15,7 +15,7 @@ module Casbah
       end
 
       def register( service )
-        instance = serialize( service )
+        instance = deserialize( service )
 
         collection = services
 
