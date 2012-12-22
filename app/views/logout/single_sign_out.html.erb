@@ -1,0 +1,40 @@
+<script>
+  var _casbah_services = <%= @services.size %>;
+
+  function _casbah_cb() {
+    _casbah_services--;
+    if(_casbah_services < 1) {
+      setTimeout(function() {
+        window.location.reload();
+      }, 0);
+    }
+  }
+
+  setTimeout(function() {
+    document.getElementById('loader').classList.add('fade-in');
+  }, 2500);
+</script>
+
+<% @services.each do |service| %>
+  <iframe src="<%= service.logout_url %>" onload="_casbah_cb(this)" onerror="_casbah_cb(this)" style="display: none;"></iframe>
+<% end %>
+
+<style>
+  .container {
+    opacity: 0;
+    transition: opacity .5s ease-in-out;
+    -moz-transition: opacity .5s ease-in-out;
+    -webkit-transition: opacity .5s ease-in-out;
+  }
+  .fade-in {
+    opacity: 1;
+  }
+</style>
+
+<div id="loader" class="container">
+  <div class="row">
+    <div class="span4 offset4">
+      <h1>Please wait...</h1>
+    </div>
+  </div>
+</div>

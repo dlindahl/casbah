@@ -16,15 +16,54 @@ describe LogoutController do
 
   subject { response }
 
+  describe '/logout' do
+    before { cookies['tgc'] = 'TGC-123' }
+
+    context 'with single sign out enabled' do
+      before do
+        Casbah.config.stub(:single_sign_out).and_return true
+      end
+
+      context 'and no previous SSO request' do
+        before { make_request! }
+
+        it { should render_template :single_sign_out }
+      end
+
+      context 'and a previous SSO request' do
+        before do
+          cookies['sso'] = 1
+
+          make_request!
+        end
+
+        it { should render_template :index }
+      end
+
+    end
+
+    context 'with single sign out disabled' do
+      before do
+        Casbah.config.stub(:single_sign_out).and_return false
+
+        make_request!
+      end
+
+      it { should render_template :index }
+    end
+  end
+
   describe '2.3. /logout' do
     before do
-      cookies[:tgc] = 'TGC-123'
+      cookies['tgc'] = 'TGC-123'
+
+      cookies['sso'] = 1
 
       make_request!
     end
 
     it 'MUST destroy the ticket-granting cookie' do
-      cookies[:tgc].should be_nil
+      cookies['tgc'].should be_nil
     end
 
     context 'subsequent requests to /login' do
