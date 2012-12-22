@@ -3,6 +3,9 @@ class ServiceTicket < Ticket
 
   validates_presence_of :username, :url, allow_blank:false
 
+  define_model_callbacks :save
+  after_save :register_service
+
   def initialize( params = {} )
     super
 
@@ -12,10 +15,12 @@ class ServiceTicket < Ticket
 
   def save
     if valid?
-      redis.pipelined do 
-        redis.hset    id, :url, url
-        redis.hset    id, :username, username
-        redis.expire  id, expire_time
+      run_callbacks :save do
+        redis.pipelined do 
+          redis.hset    id, :url, url
+          redis.hset    id, :username, username
+          redis.expire  id, expire_time
+        end
       end
     end
   end
@@ -26,6 +31,10 @@ class ServiceTicket < Ticket
     destroy
 
     verified
+  end
+
+  def register_service
+    Casbah::Service.registry.register url:url
   end
 
   class << self

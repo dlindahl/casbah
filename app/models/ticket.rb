@@ -1,5 +1,6 @@
 class Ticket
   include ActiveModel::Validations
+  extend ActiveModel::Callbacks
 
   class_attribute :expire_time
   class_attribute :id_prefix

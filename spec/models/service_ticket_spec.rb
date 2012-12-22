@@ -20,6 +20,14 @@ describe ServiceTicket do
         redis.hget( id, :url ).should eq url
         redis.ttl( id ).should eq 5.minutes
       end
+
+      it 'should register the service' do
+        Casbah::Service.registry
+          .should_receive(:register)
+          .with( url:url )
+
+        subject
+      end
     end
 
     context 'with an invalid ticket' do
