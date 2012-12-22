@@ -1,3 +1,4 @@
+require 'casbah/service/memory_store'
 require 'casbah/service/yaml_store'
 require 'casbah/service/redis_store'
 require 'casbah/service/base'
