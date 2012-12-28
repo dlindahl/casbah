@@ -4,6 +4,8 @@ class LoginController < ApplicationController
 
   respond_to :html, :xml, :json
 
+  rescue_from Casbah::TicketNotFoundError, with: :login_expired
+
   def index
     if params[:renew]
       renew
@@ -41,6 +43,10 @@ class LoginController < ApplicationController
     Rails.logger.warn "Authentication attempt failed: #{request.env['warden.options']}"
 
     render text:'401 Unauthorized', status: :unauthorized
+  end
+
+  def login_expired
+    redirect_to logout_url
   end
 
 protected
@@ -105,7 +111,7 @@ private
   end
 
   def signed_in?
-    @sso_session ||= TicketGrantingTicket.find_by_tgc( cookies['tgc'] )
+    @sso_session ||= TicketGrantingTicket.find_by_tgc! cookies['tgc']
   end
 
   def authorized?

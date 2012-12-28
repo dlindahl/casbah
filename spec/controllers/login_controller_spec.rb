@@ -13,6 +13,16 @@ describe LoginController do
 
   subject { response }
 
+  describe 'GET /login' do
+    before { cookies['tgc'] = 'TGC-expired' }
+
+    subject { get(:index, params) }
+
+    context 'with an expired SSO session' do
+      it { should redirect_to :logout }
+    end
+  end
+
   describe '2.1. /login as credential requestor' do
     let(:make_request!) { get( :index, params ) }
 
