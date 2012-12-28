@@ -11,7 +11,11 @@ module Casbah
       end
 
       def fetch( id )
-        deserialize services.find{ |s| s.id == id }
+        service = services.find{ |s| s.id == id }
+
+        raise Casbah::ServiceNotFoundError unless service
+
+        deserialize service
       end
 
       def register( service )

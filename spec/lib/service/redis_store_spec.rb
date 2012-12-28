@@ -7,16 +7,24 @@ describe Casbah::Service::RedisStore do
   let(:instance) { described_class.new(model) }
 
   describe '#fetch' do
-    before do
-      Casbah.config.redis.hset service.id, :url, service.url
-    end
-
     subject { instance.fetch( service.id ) }
 
-    it 'should retrieve the instance' do
-      subject.should be_a model
-      subject.id.should eq service.id
-      subject.url.should eq service.url
+    context 'with a known ID' do
+      before do
+        Casbah.config.redis.hset service.id, :url, service.url
+      end
+
+      it 'should retrieve the instance' do
+        subject.should be_a model
+        subject.id.should eq service.id
+        subject.url.should eq service.url
+      end
+    end
+
+    context 'with an unknown ID' do
+      it 'should raise an error' do
+        expect { subject }.to raise_error Casbah::ServiceNotFoundError
+      end
     end
   end
 

@@ -5,6 +5,8 @@ module Casbah
     class RedisStore < AbstractStore
 
       def fetch( id )
+        raise ServiceNotFoundError unless redis.exists( id )
+
         obj = {}
 
         serialize(@model.new).keys.each do |k|

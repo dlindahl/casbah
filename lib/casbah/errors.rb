@@ -1,6 +1,7 @@
 module Casbah
-  Error               = Class.new(StandardError)
-  ValidationError     = Class.new(StandardError)
+  Error                = Class.new(StandardError)
+  ValidationError      = Class.new(StandardError)
+  ServiceNotFoundError = Class.new(StandardError)
 
   class SSOConfigError < Error
     def message

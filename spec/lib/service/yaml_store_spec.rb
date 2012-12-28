@@ -25,13 +25,21 @@ describe Casbah::Service::YamlStore do
   end
 
   describe '#fetch' do
-    before { instance.register service }
-
     subject { instance.fetch( service.id ) }
 
-    it 'should retrieve the instance' do
-      subject.should be_a model
-      subject.id.should == service.id
+    context 'with a known ID' do
+      before { instance.register service }
+
+      it 'should retrieve the instance' do
+        subject.should be_a model
+        subject.id.should == service.id
+      end
+    end
+
+    context 'with an unknown ID' do
+      it 'should raise an error' do
+        expect{ subject }.to raise_error Casbah::ServiceNotFoundError
+      end
     end
   end
 
