@@ -19,5 +19,9 @@ module Casbah
       @registry.registered?( id )
     end
 
+    def self.register( *args )
+      @registry.register( *args )
+    end
+
   end
 end
