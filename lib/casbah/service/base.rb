@@ -9,7 +9,13 @@ module Casbah
       validates_presence_of :url, allow_blank:false
 
       def initialize( params = {} )
-        self.url = params[:url]
+        params.each do |k, v|
+          if respond_to? "#{k}="
+            self.send "#{k}=", v
+          else
+            instance_variable_set "@#{k}", v
+          end
+        end
       end
 
       def id
