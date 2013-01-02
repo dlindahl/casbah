@@ -30,7 +30,15 @@ describe Casbah::Service::Base do
 
     subject { instance.url }
 
-    it { should == 'https://qct01.dc.customink.com:3000' }
+    context 'with a valid url' do
+      it { should == 'https://qct01.dc.customink.com:3000' }
+    end
+
+    context 'with an invalid url' do
+      let(:url) { 'foo' }
+
+      it { should be_nil }
+    end
   end
 
   describe '#attributes' do

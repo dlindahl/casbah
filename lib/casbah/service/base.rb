@@ -27,9 +27,9 @@ module Casbah
       end
 
       def url=( value )
-        uri = Addressable::URI.parse( value ) if value.is_a? String
+        uri = Addressable::URI.parse( value ) if value.is_a?( String )
 
-        @url = uri.origin if uri
+        @url = uri.origin if uri && uri.origin != 'null'
       end
 
       def attributes
