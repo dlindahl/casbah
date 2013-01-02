@@ -35,6 +35,12 @@ Casbah.configure do |c|
   c.warden ->(mgr) {
     mgr.default_strategies :my_strategy
   }
+
+  # If your `ApplicationController` defines a `before_filter` that authenticates
+  # all requests, you will need to tell Casbah the name of that filter so that
+  # it will get skipped for `/login` page requests. Otherwise, your users would
+  # never be able to login!
+  c.authentication_filter = :authenticate! # Defaults to :require_login
 ```
 
 You are responsible for properly creating and configuring your Redis connection.

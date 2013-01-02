@@ -14,6 +14,12 @@ describe 'Casbah.config' do
     it { should be_false }
   end
 
+  describe '#authentication_filter' do
+    subject { Casbah.config.authentication_filter }
+
+    it { should == :require_login }
+  end
+
   describe Casbah::ConfigurationConcern do
     let(:klass) do
       Class.new

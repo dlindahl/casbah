@@ -1,4 +1,5 @@
 class ValidateController < ApplicationController
+  skip_before_filter Casbah.config.authentication_filter
 
   def index
     # TODO: Raise an InvalidRequestError and write a rescuer

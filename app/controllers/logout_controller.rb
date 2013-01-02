@@ -1,4 +1,5 @@
 class LogoutController < ApplicationController
+  skip_before_filter Casbah.config.authentication_filter
 
   def index
     if single_sign_out?

@@ -1,6 +1,7 @@
 require 'addressable/uri'
 
 class LoginController < ApplicationController
+  skip_before_filter Casbah.config.authentication_filter
 
   respond_to :html, :xml, :json
 

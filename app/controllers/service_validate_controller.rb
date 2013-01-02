@@ -1,4 +1,5 @@
 class ServiceValidateController < ApplicationController
+  skip_before_filter Casbah.config.authentication_filter
 
   respond_to :xml
 
