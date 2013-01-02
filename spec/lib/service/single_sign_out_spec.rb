@@ -22,6 +22,12 @@ describe Casbah::Service::SingleSignOut do
       it { should == path }
     end
 
+    context 'with a blank value' do
+      let(:path) { '' }
+
+      it { should == default }
+    end
+
     context 'with no specific value' do
       it 'should fallback to the service default' do
         subject.should == default

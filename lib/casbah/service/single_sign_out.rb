@@ -12,7 +12,11 @@ module Casbah
       end
 
       def logout_path
-        @logout_path || Casbah.config.service_options[:logout_path]
+        if @logout_path.blank?
+          Casbah.config.service_options[:logout_path]
+        else
+          @logout_path
+        end
       end
 
       def logout_url
