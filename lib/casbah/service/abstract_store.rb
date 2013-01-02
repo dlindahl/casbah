@@ -37,7 +37,7 @@ module Casbah
       def deserialize( obj )
         service = obj.is_a?(@model) ? obj : @model.new( obj )
 
-        raise Casbah::Service::Base::ValidationError, service.errors.full_messages unless service.valid?
+        raise Casbah::ValidationError, service.errors.full_messages unless service.valid?
 
         service
       end

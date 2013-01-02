@@ -1,7 +1,11 @@
 describe Casbah::Service::AbstractStore do
-  let(:model) { double('model').as_null_object }
+  let(:instance) { described_class.new( MyService ) }
 
-  subject { described_class.new( model ) }
+  let(:model) { Class.new( Casbah::Service::Base ) }
+
+  before { stub_const 'MyService', model }
+
+  subject { instance }
 
   describe '#fetch' do
     it 'should raise an error' do
@@ -46,6 +50,26 @@ describe Casbah::Service::AbstractStore do
 
     it 'should serialize the model' do
       subject.serialize( service ).should == service
+    end
+  end
+
+  describe '#deserialize' do
+    subject { instance.deserialize(entity) }
+
+    context 'with a valid entity' do
+      let(:entity) { { url:'http://example.org' } }
+
+      it 'should return the entity' do
+        subject.should be_a MyService
+      end
+    end
+
+    context 'with an invalid entity' do
+      let(:entity) { {} }
+
+      it 'should raise an error' do
+        expect{ subject }.to raise_error Casbah::ValidationError
+      end
     end
   end
 
