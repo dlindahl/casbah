@@ -19,6 +19,12 @@ describe Casbah::Service::Base do
     it { should == 'service.https://qct01.dc.customink.com:3000' }
   end
 
+  describe '#to_s' do
+    subject { instance.to_s }
+
+    it { should == instance.id }
+  end
+
   describe '#url=' do
     before { instance.url = url }
 

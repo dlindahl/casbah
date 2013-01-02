@@ -22,6 +22,10 @@ module Casbah
         "service.#{url}"
       end
 
+      def to_s
+        id
+      end
+
       def url=( value )
         uri = Addressable::URI.parse( value ) if value.is_a? String
 
