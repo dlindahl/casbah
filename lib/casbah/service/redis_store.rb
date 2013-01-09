@@ -7,11 +7,7 @@ module Casbah
       def fetch( id )
         raise ServiceNotFoundError unless redis.exists( id )
 
-        obj = {}
-
-        serialize(@model.new).keys.each do |k|
-          obj[k.to_sym] = redis.hget( id, k.to_sym )
-        end
+        obj = redis.hgetall( id )
 
         deserialize obj
       end
