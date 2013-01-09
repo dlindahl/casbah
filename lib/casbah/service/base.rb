@@ -2,6 +2,7 @@ module Casbah
   module Service
     class Base
       include ActiveModel::Validations
+      include ActiveModel::Conversion
       include ActiveModel::Serializers::JSON
 
       attr_accessor :id, :url
@@ -22,8 +23,16 @@ module Casbah
         "service.#{url}"
       end
 
-      def to_s
-        id
+      def new_record?
+        @new_record
+      end
+
+      def destroyed?
+        @destroyed
+      end
+
+      def persisted?
+        !(new_record? || destroyed?)
       end
 
       def url=( value )
@@ -40,7 +49,7 @@ module Casbah
       end
 
       def destroy
-        Casbah::Service.registry.delete( id )
+        Casbah::Service.registry.delete( self )
       end
 
       def register

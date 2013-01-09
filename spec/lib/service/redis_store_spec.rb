@@ -19,6 +19,10 @@ describe Casbah::Service::RedisStore do
         subject.id.should eq service.id
         subject.url.should eq service.url
       end
+
+      it 'should indicate that the service is not a new record' do
+        subject.new_record?.should be_false
+      end
     end
 
     context 'with an unknown ID' do
@@ -29,20 +33,30 @@ describe Casbah::Service::RedisStore do
   end
 
   describe '#register' do
-    it 'should store the instance' do
-      instance.register service
+    before { instance.register service }
 
+    it 'should store the instance' do
       Casbah.config.redis.exists( service.id ).should be_true
+    end
+
+    it 'should indicate that the service is not a new record' do
+      service.new_record?.should be_false
     end
   end
 
   describe '#delete' do
     before { instance.register service }
 
+    subject { instance.delete service }
+
     it 'should delete the instance' do
-      instance.delete service.id
+      subject
 
       Casbah.config.redis.exists( service.id ).should be_false
+    end
+
+    it 'should indicate that the service is destroyed' do
+      subject.destroyed?.should be_true
     end
   end
 

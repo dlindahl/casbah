@@ -9,7 +9,9 @@ module Casbah
 
         obj = redis.hgetall( id )
 
-        deserialize obj
+        deserialize( obj ).tap do |s|
+          s.instance_variable_set '@new_record', false
+        end
       end
 
       def register( obj )
@@ -20,10 +22,14 @@ module Casbah
             redis.hset service.id, k.to_sym, v
           end
         end
+
+        service.tap{ |s| s.instance_variable_set( '@new_record', false ) }
       end
 
-      def delete( id )
-        redis.del id
+      def delete( service )
+        redis.del service.id
+
+        service.tap{ |s| s.instance_variable_set( '@destroyed', true ) }
       end
 
       def services

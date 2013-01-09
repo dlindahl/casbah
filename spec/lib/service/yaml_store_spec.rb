@@ -34,6 +34,10 @@ describe Casbah::Service::YamlStore do
         subject.should be_a model
         subject.id.should == service.id
       end
+
+      it 'should indicate that the service is not a new record' do
+        subject.new_record?.should be_false
+      end
     end
 
     context 'with an unknown ID' do
@@ -51,15 +55,25 @@ describe Casbah::Service::YamlStore do
     it 'should store the instance' do
       subject.collect(&:id).should include service.id
     end
+
+    it 'should indicate that the service is not a new record' do
+      service.new_record?.should be_false
+    end
   end
 
   describe '#delete' do
     before { instance.register service }
 
+    subject { instance.delete service }
+
     it 'should delete the instance' do
-      instance.delete service.id
+      subject
 
       YAML.load_file( "#{path}/registered_services.yml" ).should be_empty
+    end
+
+    it 'should indicate that the service is destroyed' do
+      subject.destroyed?.should be_true
     end
   end
 

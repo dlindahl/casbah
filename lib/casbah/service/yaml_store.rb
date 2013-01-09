@@ -15,7 +15,9 @@ module Casbah
 
         raise Casbah::ServiceNotFoundError unless service
 
-        deserialize service
+        deserialize( service ).tap do |s|
+          s.instance_variable_set '@new_record', false
+        end
       end
 
       def register( service )
@@ -28,14 +30,14 @@ module Casbah
         end
 
         write collection
+
+        instance.tap{ |s| s.instance_variable_set( '@new_record', false ) }
       end
 
-      def delete( id )
-        service = fetch( id )
+      def delete( service )
+        write services.reject{ |s| s.id == service.id }
 
-        write services.reject{ |s| s.id == id }
-
-        service
+        service.tap{ |s| s.instance_variable_set( '@destroyed', true ) }
       end
 
       # TODO: Even though the values are already deserialized by the YAML lib,
