@@ -24,6 +24,8 @@ module Casbah
 
       def registered?( id )
         not fetch( id ).nil?
+      rescue Casbah::ServiceNotFoundError
+        false
       end
 
       def clear!

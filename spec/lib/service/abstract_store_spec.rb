@@ -32,10 +32,20 @@ describe Casbah::Service::AbstractStore do
   end
 
   describe '#registered?' do
-    before { subject.should_receive(:fetch).with(123) }
+    before { instance.should_receive(:fetch).with(123).and_return existence }
 
-    it 'should detect if the ID is registered' do
-      subject.registered? 123
+    subject { instance.registered? 123 }
+
+    context 'for a registered service' do
+      let(:existence) { true }
+
+      it { should be_true }
+    end
+
+    context 'for an unregistered service' do
+      let(:existence) { nil }
+
+      it { should be_false }
     end
   end
 
