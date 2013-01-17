@@ -12,6 +12,8 @@ describe ServiceTicket do
   describe '#save' do
     subject { instance.save }
 
+    after { Casbah::Service.registry.clear! }
+
     context 'with a valid ticket' do
       it 'should save the ticket' do
         subject
@@ -21,12 +23,27 @@ describe ServiceTicket do
         redis.ttl( id ).should eq 5.minutes
       end
 
-      it 'should register the service' do
-        Casbah::Service.registry
-          .should_receive(:register)
-          .with( url:url )
+      context 'for an unknown service' do
+        it 'should register the service' do
+          Casbah::Service.registry
+            .should_receive(:register)
+            .with{ |svc| svc.url == 'http://example.org' }
 
-        subject
+          subject
+        end
+      end
+
+      context 'for a known service' do
+        before do
+          Casbah::Service.registry.register url:url
+        end
+
+        it 'should not re-register the service' do
+          Casbah::Service.registry
+            .should_receive(:register).never
+
+          subject
+        end
       end
     end
 

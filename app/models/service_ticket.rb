@@ -34,7 +34,11 @@ class ServiceTicket < Ticket
   end
 
   def register_service
-    Casbah::Service.registry.register url:url
+    service = Casbah::Service.registry.deserialize( url:url )
+
+    unless Casbah::Service.registry.registered? service.id
+      Casbah::Service.registry.register service
+    end
   end
 
   class << self
